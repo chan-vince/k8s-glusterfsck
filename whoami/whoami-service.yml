@@ -3,7 +3,6 @@ kind: Service
 metadata:
   name: whoami-service
   namespace: default
-  annotations: traefik.ingress.kubernetes.io/service.sticky: "true"
 spec:
   type: ClusterIP
   ports:
