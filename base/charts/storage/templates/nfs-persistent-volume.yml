@@ -3,6 +3,7 @@ kind: PersistentVolume
 metadata:
   name: kube-storage-nfs
   labels:
+    {{- include "storage.labels" . | nindent 4 }}
     bucket: shared
 spec:
   capacity:
