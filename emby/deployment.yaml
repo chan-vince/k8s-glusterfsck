@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: emby
+  labels:
+    app: emby
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: emby
+  template:
+    metadata:
+      labels:
+        app: emby
+    spec:
+      containers:
+        - name: emby
+          image: emby/embyserver
+          ports:
+            - containerPort: 8096
+            - containerPort: 8920
+          env:
+            - name: GIDLIST
+              value: 44,107
+          volumeMounts:
+            - name: emby-storage
+              mountPath: /config
+              subPath: emby
+            - mountPath: "/mnt/glusterfs"
+              name: glusterfs-media
+          resources:
+            limits:
+              gpu.intel.com/i915: 1
+          securityContext:
+            runAsUser: 0
+        # - name: sonarr
+        #   image: linuxserver/sonarr
+        #   ports:
+        #     - containerPort: 8989
+        #   env:
+        #     - name: PUID
+        #       value: "1000"
+        #     - name: PGID
+        #       value: "1000"
+        #     - name: TZ
+        #       value: Europe/London
+        #   volumeMounts:
+        #     - name: sonarr-storage
+        #       mountPath: /config
+        #       subPath: sonarr
+        #     - mountPath: "/tv"
+        #       name: tv
+        #       subPath: video/TV Shows
+        #     - mountPath: "/downloads"
+        #       name: downloads
+        #       subPath: downloads
+      volumes:
+        - name: emby-storage
+          persistentVolumeClaim:
+            claimName: shared-data
+        - name: glusterfs-media
+          glusterfs:
+            endpoints: glusterfs-cluster
+            path: /gmedia
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: emby
+spec:
+  ports:
+    - name: http
+      port: 8096
+  selector:
+    app: emby
+  # type: ClusterIP
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster

@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: filebrowser
+  labels:
+    app: filebrowser
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: filebrowser
+  template:
+    metadata:
+      labels:
+        app: filebrowser
+    spec:
+      containers:
+        - name: filebrowser
+          image: filebrowser/filebrowser
+          ports:
+            - containerPort: 80
+          volumeMounts:
+            - name: filebrowser-storage
+              mountPath: /srv
+              subPath: filebrowser
+      volumes:
+        - name: filebrowser-storage
+          persistentVolumeClaim:
+            claimName: shared-data
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: filebrowser
+spec:
+  ports:
+    - name: http
+      port: 80
+  selector:
+    app: filebrowser
+  # type: ClusterIP
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster

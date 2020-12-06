@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: phpldapadmin-controller
+  labels:
+    app: phpldapadmin
+spec:
+  replicas: 1
+  selector:
+    app: phpldapadmin
+  template:
+    metadata:
+      labels:
+        app: phpldapadmin
+    spec:
+      containers:
+        - name: phpldapadmin
+          image: osixia/phpldapadmin:latest
+          # volumeMounts:
+          #   # - name: phpldapadmin-certs
+          #   #   mountPath: /container/service/phpldapadmin/assets/apache2/certs
+          #   # - name: ldap-client-certs
+          #   #   mountPath: /container/service/ldap-client/assets/certs
+          ports:
+            - containerPort: 443
+          env:
+            - name: PHPLDAPADMIN_LDAP_HOSTS
+              value: "openldap"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: phpldapadmin
+  labels:
+    app: phpldapadmin
+spec:
+  ports:
+    - port: 443
+  selector:
+    app: phpldapadmin
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster
+  loadBalancerIP: 192.168.10.111

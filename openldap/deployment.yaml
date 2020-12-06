@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openldap
+  labels:
+    app: openldap
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openldap
+  template:
+    metadata:
+      labels:
+        app: openldap
+    spec:
+      # securityContext:
+        # runAsUser: 1000
+        # fsGroup: 1000
+      containers:
+        - name: openldap
+          image: osixia/openldap:latest
+          ports:
+            - containerPort: 389
+              name: openldap
+          env:
+            - name: LDAP_ORGANISATION
+              value: Vynology
+            - name: LDAP_DOMAIN
+              value: vynology.com
+          envFrom:
+            - secretRef:
+                #LDAP_ADMIN_PASSWORD
+                name: openldap-kbdf9cm65g
+          volumeMounts:
+            - name: openldap-storage
+              mountPath: /var/lib/ldap
+              subPath: openldap-db
+            - name: openldap-storage
+              mountPath: /etc/ldap/slapd.d
+              subPath: openldap-config
+      volumes:
+        - name: openldap-storage
+          persistentVolumeClaim:
+            claimName: shared-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openldap
+  labels:
+    app: openldap
+spec:
+  ports:
+    - port: 389
+  selector:
+    app: openldap
+  type: ClusterIP
+  # type: LoadBalancer
+  # externalTrafficPolicy: Cluster
+  # loadBalancerIP: 192.168.10.111
