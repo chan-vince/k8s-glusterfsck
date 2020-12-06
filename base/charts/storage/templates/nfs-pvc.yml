@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: shared-data
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: slow
+  resources:
+    requests:
+      storage: 450G
+  selector:
+    matchLabels:
+      bucket: shared
