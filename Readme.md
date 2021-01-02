@@ -1,0 +1,1 @@
+ helm upgrade --install --set traefik-ingress-controller.cf_email=$CF_EMAIL --set traefik-ingress-controller.cf_token=$CF_DNS_API_TOKEN base ./base

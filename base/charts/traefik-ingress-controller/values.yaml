@@ -1,6 +1,10 @@
-# Default values for base.
+# Default values for traefik-ingress-controller.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+
+cf_email: email
+cf_token: token
 
 replicaCount: 1
 
@@ -77,34 +81,3 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
-
-glusterfs: {}
-
-storage: {}
-
-metallb:
-  existingConfigMap: metallb-config
-
-kubernetes-dashboard:
-  extraArgs: ['--token-ttl=0']
-  enableInsecureLogin: true
-  service:
-    type: LoadBalancer
-    loadBalancerIP: 192.168.10.100
-  ingress:
-    enabled: false
-    annotations:
-      kubernetes.io/ingress.class: traefik
-      traefik.ingress.kubernetes.io/router.tls: 'true'
-      traefik.ingress.kubernetes.io/router.tls.certresolver: default
-    paths: [/, /*]
-    hosts:
-    - dashboard.vynology.com
-
-traefik-ingress-controller:
-  service:
-    type: LoadBalancer
-  serviceAccount:
-    name: "traefik-ingress-controller"
-  dashboard:
-    enabled: true

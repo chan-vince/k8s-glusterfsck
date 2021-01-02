@@ -1,0 +1,9 @@
+dependencies:
+- name: metallb
+  repository: https://charts.bitnami.com/bitnami
+  version: 1.0.1
+- name: kubernetes-dashboard
+  repository: https://kubernetes.github.io/dashboard/
+  version: 3.0.0
+digest: sha256:dba90516b317c8508438ed55a2aac4daa2af9642f6820b4e3967defbe13e6675
+generated: "2020-12-06T21:52:43.6843855Z"

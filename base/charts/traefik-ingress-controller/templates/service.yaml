@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "traefik-ingress-controller.fullname" . }}
+  labels:
+    {{- include "traefik-ingress-controller.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  # if
+  loadBalancerIP: 192.168.10.101
+  ports:
+    # - port: {{ .Values.service.port }}
+    #   targetPort: http
+    #   protocol: TCP
+    #   name: http
+    - protocol: TCP
+      port: 80
+      name: web
+    - protocol: TCP
+      port: 8080
+      name: admin
+    - protocol: TCP
+      port: 443
+      name: websecure
+  selector:
+    k8s-app: traefik-ingress-lb
