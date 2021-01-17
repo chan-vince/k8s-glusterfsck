@@ -3,6 +3,8 @@ image:
   tag: v0.13.1
   pullPolicy: IfNotPresent
 
+fullnameOverride: ""
+
 resources: {}
 nodeSelector: {}
 tolerations: []

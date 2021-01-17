@@ -1,2 +1,2 @@
 *.tgz
-onion/charts/openvpn/secret.yaml
+**/unsealed-secret.yaml
