@@ -1,79 +1,69 @@
-# Default values for onion.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+radarr:
+  image:
+    repository: linuxserver/radarr
+    pullPolicy: IfNotPresent
+    tag: latest
 
-replicaCount: 1
+  strategy:
+    type: Recreate
 
-image:
-  repository: emby/embyserver
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  service:
+    enabled: true
+    type: LoadBalancer
+    loadBalancerIP: 192.168.10.104
+    ## Specify the default port information
+    port:
+      port: 7878
+      ## name defaults to http
+      name: web
+      protocol: TCP
+      ## Specify a service targetPort if you wish to differ the service port from the application port.
+      ## If targetPort is specified, this port number is used in the container definition instead of
+      ## service.port.port. Therefore named ports are not supported for this field.
+      targetPort:
+      ## Specify the nodePort value for the LoadBalancer and NodePort service types.
+      ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
+      ##
+      nodePort:
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+  env: {}
+    # TZ: UTC
+    # PUID: 1001
+    # PGID: 1001
 
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
+  ingress:
+    enabled: false
+    annotations:
+        kubernetes.io/ingress.class: traefik
+        traefik.ingress.kubernetes.io/router.tls: 'true'
+        traefik.ingress.kubernetes.io/router.tls.certresolver: default
+    labels: {}
+    hosts:
+      - host: radarr.vynology.com
+        paths:
+          - path: /
+            # Ignored if not kubeVersion >= 1.14-0
+            pathType: Prefix
 
-podAnnotations: {}
+  persistence:
+    config:
+      enabled: false
 
-podSecurityContext: {}
-  # fsGroup: 2000
+    media:
+      enabled: false
 
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+  additionalVolumes:
+  - name: config
+    hostPath:
+      path: /radarr
+      type: DirectoryOrCreate
+  - name: glusterfs-media
+    glusterfs:
+      endpoints: glusterfs-cluster
+      path: /gmedia/video/Movies/
 
-service:
-  type: ClusterIP
-  port: 80
-
-ingress:
-  enabled: false
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths: []
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
+  additionalVolumeMounts:
+    - name: config
+      mountPath: /config
+    - name: glusterfs-media
+      mountPath: /movies

@@ -7,8 +7,13 @@ spec:
   selector:
     app:  transmission
   ports:
-  - port: 9091
+  - name: web
+    port: 9091
     protocol: TCP
     targetPort: 9091
+  - name: proxy
+    port: 8888
+    protocol: TCP
+    targetPort: 8888
   sessionAffinity: None
-  type: NodePort
+  type: ClusterIP

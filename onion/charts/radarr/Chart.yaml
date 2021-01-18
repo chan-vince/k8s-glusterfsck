@@ -1,0 +1,21 @@
+apiVersion: v2
+appVersion: 3.0.0.3989
+dependencies:
+- name: common
+  repository: https://k8s-at-home.com/charts/
+  version: 2.2.1
+description: A fork of Sonarr to work with movies à la Couchpotato
+home: https://github.com/k8s-at-home/charts/tree/master/charts/radarr
+icon: https://github.com/Radarr/Radarr/blob/aphrodite/Logo/512.png?raw=true
+keywords:
+- radarr
+- torrent
+- usenet
+maintainers:
+- email: jeff@billimek.com
+  name: billimek
+name: radarr
+sources:
+- https://github.com/Radarr/Radarr
+- https://hub.docker.com/r/linuxserver/radarr
+version: 8.3.1

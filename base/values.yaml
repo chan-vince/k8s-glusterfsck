@@ -108,3 +108,15 @@ traefik-ingress-controller:
     name: "traefik-ingress-controller"
   dashboard:
     enabled: true
+
+whoami:
+  ingress:
+    enabled: true
+    annotations:
+      kubernetes.io/ingress.class: traefik
+      traefik.ingress.kubernetes.io/router.tls: 'true'
+      traefik.ingress.kubernetes.io/router.tls.certresolver: default
+    hosts:
+    - host: whoami.vynology.com
+      paths: 
+        - /

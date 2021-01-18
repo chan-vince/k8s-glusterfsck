@@ -20,15 +20,17 @@ spec:
           ports:
             - containerPort: 8096
             - containerPort: 8920
-          env:
-            - name: GIDLIST
-              value: 44,107
+          # env:
+          #   - name: GIDLIST
+          #     value: 44,107
           volumeMounts:
             - name: emby-storage
               mountPath: /config
               subPath: emby
             - mountPath: "/mnt/glusterfs"
               name: glusterfs-media
+            - mountPath: /tmp/emby
+              name: transcode
           resources:
             limits:
               gpu.intel.com/i915: 1
@@ -63,6 +65,10 @@ spec:
           glusterfs:
             endpoints: glusterfs-cluster
             path: /gmedia
+        - name: transcode
+          hostPath:
+            path: /tmp/emby
+            type: DirectoryOrCreate
 
 ---
 apiVersion: v1
