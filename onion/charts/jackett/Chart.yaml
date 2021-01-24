@@ -1,0 +1,20 @@
+apiVersion: v2
+appVersion: v0.16.2106
+dependencies:
+- name: common
+  repository: https://k8s-at-home.com/charts/
+  version: 2.2.1
+description: API Support for your favorite torrent trackers
+home: https://github.com/k8s-at-home/charts/tree/master/charts/jackett
+icon: https://raw.githubusercontent.com/linuxserver/docker-templates/master/linuxserver.io/img/jackett-banner.png
+keywords:
+- jackett
+- torrent
+maintainers:
+- email: jeff@billimek.com
+  name: billimek
+name: jackett
+sources:
+- https://hub.docker.com/r/linuxserver/jackett/
+- https://github.com/Jackett/Jackett
+version: 6.3.1

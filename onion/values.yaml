@@ -10,26 +10,19 @@ radarr:
   service:
     enabled: true
     type: LoadBalancer
-    loadBalancerIP: 192.168.10.104
-    ## Specify the default port information
+    externalTrafficPolicy: Cluster
+    annotations:
+      metallb.universe.tf/allow-shared-ip: onion
+    loadBalancerIP: 192.168.10.105
     port:
       port: 7878
-      ## name defaults to http
       name: web
       protocol: TCP
-      ## Specify a service targetPort if you wish to differ the service port from the application port.
-      ## If targetPort is specified, this port number is used in the container definition instead of
-      ## service.port.port. Therefore named ports are not supported for this field.
-      targetPort:
-      ## Specify the nodePort value for the LoadBalancer and NodePort service types.
-      ## ref: https://kubernetes.io/docs/concepts/services-networking/service/#type-nodeport
-      ##
-      nodePort:
 
-  env: {}
-    # TZ: UTC
-    # PUID: 1001
-    # PGID: 1001
+  env:
+    TZ: UTC
+    PUID: 1001
+    PGID: 1001
 
   ingress:
     enabled: false
@@ -42,12 +35,17 @@ radarr:
       - host: radarr.vynology.com
         paths:
           - path: /
-            # Ignored if not kubeVersion >= 1.14-0
             pathType: Prefix
 
   persistence:
     config:
       enabled: false
+      # emptyDir: false
+      # existingClaim: shared-data
+      # subPath: radarr
+      # accessMode: ReadWriteOnce
+      # size: 10Gi
+      # skipuninstall: false
 
     media:
       enabled: false
@@ -67,3 +65,30 @@ radarr:
       mountPath: /config
     - name: glusterfs-media
       mountPath: /movies
+
+jackett:
+  env:
+    TZ: UTC
+    PUID: 1001
+    PGID: 1001
+
+  persistence:
+    config:
+      enabled: false
+      emptyDir: false
+      existingClaim: shared-data
+      subPath: jackett
+      accessMode: ReadWriteOnce
+      size: 1Gi
+      skipuninstall: false
+
+  torrentblackhole:
+    enabled: false
+
+  service:
+    type: LoadBalancer
+    loadBalancerIP: 192.168.10.106
+    ports:
+    - port: 9117
+      protocol: TCP
+      targetPort: 9117

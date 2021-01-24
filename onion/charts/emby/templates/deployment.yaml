@@ -36,27 +36,6 @@ spec:
               gpu.intel.com/i915: 1
           securityContext:
             runAsUser: 0
-        # - name: sonarr
-        #   image: linuxserver/sonarr
-        #   ports:
-        #     - containerPort: 8989
-        #   env:
-        #     - name: PUID
-        #       value: "1000"
-        #     - name: PGID
-        #       value: "1000"
-        #     - name: TZ
-        #       value: Europe/London
-        #   volumeMounts:
-        #     - name: sonarr-storage
-        #       mountPath: /config
-        #       subPath: sonarr
-        #     - mountPath: "/tv"
-        #       name: tv
-        #       subPath: video/TV Shows
-        #     - mountPath: "/downloads"
-        #       name: downloads
-        #       subPath: downloads
       volumes:
         - name: emby-storage
           persistentVolumeClaim:
