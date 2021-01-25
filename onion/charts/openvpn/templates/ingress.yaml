@@ -4,7 +4,7 @@ metadata:
   name: transmission
 spec:
   rules:
-  - host: transmission.domain.tld
+  - host: transmission.vynology.com
     http:
       paths:
       - backend:

@@ -1,0 +1,21 @@
+apiVersion: v2
+appVersion: 3.0.4.993
+dependencies:
+- name: common
+  repository: https://k8s-at-home.com/charts/
+  version: 2.2.1
+description: Smart PVR for newsgroup and bittorrent users
+home: https://github.com/k8s-at-home/charts/tree/master/charts/media-common/sonarr
+icon: https://github.com/Sonarr/Sonarr/blob/phantom-develop/Logo/512.png?raw=true
+keywords:
+- sonarr
+- torrent
+- usenet
+maintainers:
+- email: jeff@billimek.com
+  name: billimek
+name: sonarr
+sources:
+- https://github.com/Sonarr/Sonarr
+- https://hub.docker.com/r/linuxserver/sonarr
+version: 8.2.1

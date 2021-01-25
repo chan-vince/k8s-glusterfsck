@@ -1,4 +1,6 @@
 radarr:
+  nodeSelector:
+    kubernetes.io/hostname: magnet
   image:
     repository: linuxserver/radarr
     pullPolicy: IfNotPresent
@@ -40,12 +42,6 @@ radarr:
   persistence:
     config:
       enabled: false
-      # emptyDir: false
-      # existingClaim: shared-data
-      # subPath: radarr
-      # accessMode: ReadWriteOnce
-      # size: 10Gi
-      # skipuninstall: false
 
     media:
       enabled: false
@@ -55,6 +51,9 @@ radarr:
     hostPath:
       path: /radarr
       type: DirectoryOrCreate
+  - name: downloads
+    persistentVolumeClaim:
+      claimName: shared-data
   - name: glusterfs-media
     glusterfs:
       endpoints: glusterfs-cluster
@@ -63,8 +62,81 @@ radarr:
   additionalVolumeMounts:
     - name: config
       mountPath: /config
+    - name: downloads
+      mountPath: /downloads
+      subPath: downloads
     - name: glusterfs-media
       mountPath: /movies
+
+sonarr:
+  nodeSelector:
+    kubernetes.io/hostname: squid
+  image:
+    repository: linuxserver/sonarr
+    pullPolicy: IfNotPresent
+    tag: latest
+
+  strategy:
+    type: Recreate
+
+  service:
+    enabled: true
+    type: LoadBalancer
+    externalTrafficPolicy: Cluster
+    annotations:
+      metallb.universe.tf/allow-shared-ip: onion
+    loadBalancerIP: 192.168.10.105
+    port:
+      port: 8989
+      name: web
+      protocol: TCP
+
+  env:
+    TZ: UTC
+    PUID: 1001
+    PGID: 1001
+
+  ingress:
+    enabled: false
+    annotations:
+        kubernetes.io/ingress.class: traefik
+        traefik.ingress.kubernetes.io/router.tls: 'true'
+        traefik.ingress.kubernetes.io/router.tls.certresolver: default
+    labels: {}
+    hosts:
+      - host: sonarr.vynology.com
+        paths:
+          - path: /
+            pathType: Prefix
+
+  persistence:
+    config:
+      enabled: false
+
+    media:
+      enabled: false
+
+  additionalVolumes:
+  - name: config
+    hostPath:
+      path: /sonarr
+      type: DirectoryOrCreate
+  - name: downloads
+    persistentVolumeClaim:
+      claimName: shared-data
+  - name: glusterfs-media
+    glusterfs:
+      endpoints: glusterfs-cluster
+      path: /gmedia/video/TV
+
+  additionalVolumeMounts:
+    - name: config
+      mountPath: /config
+    - name: downloads
+      mountPath: /downloads
+      subPath: downloads
+    - name: glusterfs-media
+      mountPath: /tvshows
 
 jackett:
   env:
@@ -74,7 +146,7 @@ jackett:
 
   persistence:
     config:
-      enabled: false
+      enabled: true
       emptyDir: false
       existingClaim: shared-data
       subPath: jackett
@@ -95,3 +167,52 @@ jackett:
     - port: 9117
       protocol: TCP
       targetPort: 9117
+
+ombi:
+  env:
+    TZ: UTC
+    PUID: 1001
+    PGID: 1001
+  
+  service:
+    enabled: true
+    type: LoadBalancer
+    externalTrafficPolicy: Cluster
+    annotations:
+      metallb.universe.tf/allow-shared-ip: onion
+    loadBalancerIP: 192.168.10.105
+    port:
+      port: 3579
+      name: web
+      protocol: TCP
+
+  ingress:
+    enabled: true
+    annotations:
+        kubernetes.io/ingress.class: traefik
+        traefik.ingress.kubernetes.io/router.tls: 'true'
+        traefik.ingress.kubernetes.io/router.tls.certresolver: default
+    labels: {}
+    hosts:
+      - host: ombi.vynology.com
+        paths:
+          - path: /
+            pathType: Prefix
+
+  persistence:
+    config:
+      enabled: true
+      emptyDir: false
+      existingClaim: shared-data
+      subPath: ombi
+  
+  mariadb:
+    enabled: false
+    architecture: standalone
+    auth:
+      database: ombi
+      username: ombi
+      password: ombi
+    primary:
+      persistence:
+        enabled: false

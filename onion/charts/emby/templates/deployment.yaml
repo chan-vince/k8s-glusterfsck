@@ -14,15 +14,19 @@ spec:
       labels:
         app: emby
     spec:
+      nodeSelector:
+        kubernetes.io/hostname: magnet
       containers:
         - name: emby
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
             - containerPort: 8096
             - containerPort: 8920
-          # env:
-          #   - name: GIDLIST
-          #     value: 44,107
+          env:
+            - name: UID
+              value: "1001"
+            - name: GID
+              value: "1001"
           volumeMounts:
             - name: emby-storage
               mountPath: /config

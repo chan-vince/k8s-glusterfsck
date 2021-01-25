@@ -57,6 +57,12 @@ spec:
         - mountPath: /data
           name: data
           subPath: openvpn
+        - mountPath: /data/completed
+          name: data
+          subPath: downloads/completed
+        - mountPath: /data/incomplete
+          name: data
+          subPath: downloads/incomplete
         - mountPath: /dev/net/tun
           name: tunnel
         - mountPath: /etc/localtime
