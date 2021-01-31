@@ -1,0 +1,12 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: transmission
+spec:
+  rules:
+  - host: transmission.vynology.com
+    http:
+      paths:
+      - backend:
+          serviceName: transmission
+          servicePort: 9091

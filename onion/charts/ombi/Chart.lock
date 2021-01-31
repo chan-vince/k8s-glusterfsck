@@ -1,0 +1,9 @@
+dependencies:
+- name: common
+  repository: https://k8s-at-home.com/charts/
+  version: 2.2.1
+- name: mariadb
+  repository: https://charts.bitnami.com/bitnami
+  version: 9.2.0
+digest: sha256:3446708f320d338912fbfcc0e7d818e92008b42b6625005e790c090884ef41b5
+generated: "2021-01-08T14:39:38.979658186Z"
