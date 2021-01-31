@@ -1,0 +1,56 @@
+replicaCount: 1
+
+image:
+  repository: filebrowser/filebrowser
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  enabled: true
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster
+  # annotations:
+  #   metallb.universe.tf/allow-shared-ip: filebrowser
+  loadBalancerIP: 192.168.10.108
+  port:
+    port: 80
+    name: web
+    protocol: TCP
+
+ingress:
+  enabled: false
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/router.tls: 'true'
+    traefik.ingress.kubernetes.io/router.tls.certresolver: default
+  labels: {}
+  hosts:
+  - host: frances.vynology.com
+    paths:
+      - path: /
+        pathType: Prefix
+
+volumes:
+  - name: filebrowser
+    nfs:
+      server: 192.168.10.4
+      path: "/volume1/filebrowser"
+
+volumeMounts:
+  - name: filebrowser
+    mountPath: "/etc/config.json"
+    subPath: "filebrowser/config.json"
+  - name: filebrowser
+    mountPath: "/etc/database.db"
+    subPath: "filebrowser/database.db"
+  - name: filebrowser
+    mountPath: "/srv"
+    subPath: "Frances"
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
