@@ -3,7 +3,7 @@ radarr:
     kubernetes.io/hostname: magnet
   image:
     repository: linuxserver/radarr
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     tag: latest
 
   strategy:
@@ -73,7 +73,7 @@ sonarr:
     kubernetes.io/hostname: squid
   image:
     repository: linuxserver/sonarr
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
     tag: latest
 
   strategy:
@@ -173,7 +173,7 @@ ombi:
     TZ: UTC
     PUID: 1001
     PGID: 1001
-  
+
   service:
     enabled: true
     type: LoadBalancer
@@ -205,7 +205,7 @@ ombi:
       emptyDir: false
       existingClaim: shared-data
       subPath: ombi
-  
+
   mariadb:
     enabled: false
     architecture: standalone

@@ -18,7 +18,7 @@
 ## ConfigMap to use as the configuration. Helm will not manage the
 ## contents of this ConfigMap, it is your responsibility to create it.
 #
-# existingConfigMap: metallb-config
+existingConfigMap: metallb-config
 #
 ## configInline specifies MetalLB's configuration directly, in yaml
 ## format. When configInline is used, Helm manages MetalLB's
@@ -65,7 +65,7 @@ controller:
   image:
     registry: docker.io
     repository: bitnami/metallb-controller
-    tag: 0.9.5-debian-10-r5
+    tag: latest
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images

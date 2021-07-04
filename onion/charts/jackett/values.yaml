@@ -2,8 +2,8 @@
 
 image:
   repository: linuxserver/jackett
-  pullPolicy: IfNotPresent
-  tag: version-v0.16.2106
+  pullPolicy: Always
+  tag: latest
 
 strategy:
   type: Recreate
